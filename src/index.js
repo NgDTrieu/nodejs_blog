@@ -1,30 +1,25 @@
 const path = require('path');
-const express = require('express')
-const morgan = require('morgan')
-const app = express()
-const port = 8080
+const express = require('express');
+const morgan = require('morgan');
+require('dotenv').config();
+const configViewEngine = require('./config/viewEngine');
+const webRoutes = require('./routes/web');
 
-// app.use(express.static(path.join(__dirname, 'public')));
+const app = express();
+const port = process.env.PORT || 8888;
+const hostname = process.env.HOST_NAME;
+
+
 
 app.use(morgan('combined'));
 
-// app.engine('hbs', engine({
-//     extname: '.hbs'
-// }));
 
-app.set('views', './src/resources/views');
-app.set('view engine', 'ejs');
+//config temple engine
+configViewEngine(app);
 
+//Khai báo routes
+app.use('/', webRoutes);
 
-app.get('/', (req, res) => {
-    res.render('sample.ejs');
-
-})
-
-app.get('/news', (req, res) => {
-    res.send("news");
-})
-
-app.listen(port, () => {
+app.listen(port, hostname, () => {
     console.log(`Example app listening on port ${port}`)
 })
